@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Company.G02.DAL.Data.Contexts
 {
-    internal class CompanyDbContext:DbContext
+    public class CompanyDbContext:DbContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
