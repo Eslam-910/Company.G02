@@ -11,10 +11,10 @@ namespace Company.G02.BLL.Repositories
 {
     public class DepartmenRepository : IDepartmentRepository
     {
-        private CompanyDbContext _context;
-        public DepartmenRepository()
+        private readonly CompanyDbContext _context;
+        public DepartmenRepository(CompanyDbContext context)
         {
-            _context = new CompanyDbContext();
+            _context = context;
         }
        
         public IEnumerable<Department> GetAll()
