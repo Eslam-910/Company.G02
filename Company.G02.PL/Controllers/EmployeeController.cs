@@ -64,23 +64,57 @@ namespace Company.G02.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-           return Details(id,"Edit");
+            if (id == null) return BadRequest("Invalid Id");
+            var employee = _employee.Get(id.Value);
+            if (employee == null) return NotFound(new { StatusCode = 404, message = $"Employee With Id: {id} Is Not found" });
+
+            var employeeDto = new CreateEmployeeDto()
+            {
+                
+                Name = employee.Name,
+                Age = employee.Age,
+                Address = employee.Address,
+                IsActive = employee.IsActive,
+                IsDeleted = employee.IsDeleted,
+                Email = employee.Email,
+                Phone = employee.Phone,
+                Salary = employee.Salary,
+                HirringDate = employee.HirringDate,
+                CreateAt = employee.CreateAt,
+            };
+            return View(employeeDto);
+
+           
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         
-        public IActionResult Edit([FromRoute]int id,Employee employee)
+        public IActionResult Edit([FromRoute]int id,CreateEmployeeDto model)
         {
             if(ModelState.IsValid)
             {
-                if (id != employee.Id) return BadRequest();
+              //  if(id!=model.Id)return BadRequest();
+                var employee = new Employee()
+                {
+                    Id=id,
+                    Name = model.Name,
+                    Age = model.Age,
+                    Address = model.Address,
+                    IsActive = model.IsActive,
+                    IsDeleted = model.IsDeleted,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    Salary = model.Salary,
+                    HirringDate = model.HirringDate,
+                    CreateAt = model.CreateAt,
+                };
                 var count=_employee.Update(employee);
                 if(count > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(employee);
+            return View(model);
         }
 
         [HttpGet]
