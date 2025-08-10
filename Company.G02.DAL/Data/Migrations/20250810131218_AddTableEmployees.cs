@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Company.G02.DAL.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class EmployeeTable : Migration
+    public partial class AddTableEmployees : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace Company.G02.DAL.Data.Migrations
                 newName: "Code");
 
             migrationBuilder.CreateTable(
-                name: "MyProperty",
+                name: "Employees",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -35,7 +35,7 @@ namespace Company.G02.DAL.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MyProperty", x => x.Id);
+                    table.PrimaryKey("PK_Employees", x => x.Id);
                 });
         }
 
@@ -43,7 +43,7 @@ namespace Company.G02.DAL.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MyProperty");
+                name: "Employees");
 
             migrationBuilder.RenameColumn(
                 name: "Code",

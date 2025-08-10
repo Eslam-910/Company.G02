@@ -43,7 +43,7 @@ namespace Company.G02.DAL.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("Company.G02.DAL.Models.Employee", b =>
@@ -90,7 +90,7 @@ namespace Company.G02.DAL.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MyProperty", (string)null);
+                    b.ToTable("Employees");
                 });
 #pragma warning restore 612, 618
         }
