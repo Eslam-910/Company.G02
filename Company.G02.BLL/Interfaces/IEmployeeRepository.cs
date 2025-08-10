@@ -7,7 +7,7 @@ using Company.G02.DAL.Models;
 
 namespace Company.G02.BLL.Interfaces
 {
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository:IGenericRepository<Employee>
     {
         IEnumerable<Employee> GetAll();
         Employee Get(int id);
