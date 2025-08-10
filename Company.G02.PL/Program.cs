@@ -13,7 +13,8 @@ namespace Company.G02.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<IDepartmentRepository,DepartmenRepository>();//Allow DI For Department Repository
+            builder.Services.AddScoped<IDepartmentRepository, DepartmenRepository>();//Allow DI For Department Repository
+            builder.Services.AddScoped<IEmployeeRepository, EmpolyeeRepository>();
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
