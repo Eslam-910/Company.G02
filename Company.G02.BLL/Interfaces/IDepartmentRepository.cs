@@ -8,7 +8,7 @@ using Microsoft.Identity.Client;
 
 namespace Company.G02.BLL.Interfaces
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository:IGenericRepository<Department>
     {
         IEnumerable<Department> GetAll();
         Department Get(int id);
