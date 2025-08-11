@@ -61,23 +61,36 @@ namespace Company.G02.PL.Controllers
             if (id is null) return BadRequest("Invalid Id");//400
             var department = _departmenRepository.Get(id.Value);
             if (department == null) return NotFound(new { StatusCode = 404, message = $"Department With Id {id} is Not Found " });
-
-            return Details(id, "Edit");
+            var departmentdto = new CreateDepartmentDto()
+            {
+                
+                Code = department.Code,
+                Name = department.Name,
+                CreateAt = department.CreateAt
+            };
+            return View(departmentdto);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public IActionResult Edit([FromRoute] int id, CreateDepartmentDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != department.Id) BadRequest();//400
+                // if (id != department.Id) BadRequest();//400
+                var department = new Department()
+                {
+                    Id=id,
+                    Code = model.Code,
+                    Name = model.Name,
+                    CreateAt = model.CreateAt
+                };
                 var count = _departmenRepository.Update(department);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(department);
+            return View(model);
         }
         #region MyRegion
         //[HttpPost]
