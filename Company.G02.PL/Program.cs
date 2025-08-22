@@ -1,7 +1,11 @@
+using AutoMapper;
 using Company.G02.BLL.Interfaces;
 using Company.G02.BLL.Repositories;
 using Company.G02.DAL.Data.Contexts;
+using Company.G02.PL.Mapping;
+using Company.G02.PL.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Company.G02.PL
 {
@@ -19,7 +23,16 @@ namespace Company.G02.PL
             {
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+            //life 
+            //AddScoped(); Create Object Life Time Per Request-Unreachable Object
+            //builder.Services.AddTransient();create life Time Per Operation
+            //builder.Services.AddSingleton();Create Life Time Per Application
 
+            builder.Services.AddScoped<IScopedService, ScopedService>();
+            builder.Services.AddTransient<ITransientService, TransientService>();
+            builder.Services.AddSingleton<ISiingletonService,SiingletonService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
