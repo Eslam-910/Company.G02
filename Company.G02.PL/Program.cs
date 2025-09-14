@@ -1,4 +1,5 @@
 using AutoMapper;
+using Company.G02.BLL;
 using Company.G02.BLL.Interfaces;
 using Company.G02.BLL.Repositories;
 using Company.G02.DAL.Data.Contexts;
@@ -19,12 +20,15 @@ namespace Company.G02.PL
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IDepartmentRepository, DepartmenRepository>();//Allow DI For Department Repository
             builder.Services.AddScoped<IEmployeeRepository, EmpolyeeRepository>();
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+            builder.Services.AddAutoMapper(typeof(DepartmentProfile));
+            
             //life 
             //AddScoped(); Create Object Life Time Per Request-Unreachable Object
             //builder.Services.AddTransient();create life Time Per Operation
