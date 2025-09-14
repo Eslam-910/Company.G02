@@ -1,4 +1,5 @@
-﻿using Company.G02.BLL.Interfaces;
+﻿using AutoMapper;
+using Company.G02.BLL.Interfaces;
 using Company.G02.BLL.Repositories;
 using Company.G02.DAL.Models;
 using Company.G02.PL.Dtos;
@@ -9,16 +10,22 @@ namespace Company.G02.PL.Controllers
     //Mvc Controller
     public class DepartmentController : Controller
     {
-       private readonly IDepartmentRepository _departmenRepository;
-        public DepartmentController(IDepartmentRepository departmenRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        
+
+        public DepartmentController(IUnitOfWork unitOfWork,IMapper mapper)
         {
-            _departmenRepository = departmenRepository;
+            
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            
         }
         [HttpGet]
 
         public IActionResult Index()
         {
-            var department= _departmenRepository.GetAll();
+            var department= _unitOfWork.departmentRepository.GetAll();
             return View(department);
         }
         [HttpGet]
@@ -36,8 +43,10 @@ namespace Company.G02.PL.Controllers
                     Code = model.Code,
                     Name = model.Name,
                     CreateAt = model.CreateAt
+
                 };
-               var count= _departmenRepository.Add(department);
+                //var department = _mapper.Map<Department>(model);
+               var count= _unitOfWork.departmentRepository.Add(department);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -47,27 +56,28 @@ namespace Company.G02.PL.Controllers
             return View(model);
         }
         [HttpGet]
-        public IActionResult Details(int? id,string viewName="Details") 
+        public IActionResult Details(int? id) 
         {
             if (id is null) return BadRequest("Invalid Id");//400
-            var department = _departmenRepository.Get(id.Value);
+            var department = _unitOfWork.departmentRepository.Get(id.Value);
             if (department == null) return NotFound(new { StatusCode = 404, message = $"Department With Id {id} is Not Found " });
 
-           return View(viewName,department);
+           return View(department);
         }
         [HttpGet]
         public IActionResult Edit(int? id)
         {
             if (id is null) return BadRequest("Invalid Id");//400
-            var department = _departmenRepository.Get(id.Value);
+            var department = _unitOfWork.departmentRepository.Get(id.Value);
             if (department == null) return NotFound(new { StatusCode = 404, message = $"Department With Id {id} is Not Found " });
             var departmentdto = new CreateDepartmentDto()
             {
-                
+
                 Code = department.Code,
                 Name = department.Name,
                 CreateAt = department.CreateAt
             };
+            //var departmentdto = _mapper.Map<CreateDepartmentDto>(department);
             return View(departmentdto);
         }
         [HttpPost]
@@ -79,12 +89,13 @@ namespace Company.G02.PL.Controllers
                 // if (id != department.Id) BadRequest();//400
                 var department = new Department()
                 {
-                    Id=id,
+                    Id = id,
                     Code = model.Code,
                     Name = model.Name,
                     CreateAt = model.CreateAt
                 };
-                var count = _departmenRepository.Update(department);
+               // var department= _mapper.Map<Department>(model);
+                var count = _unitOfWork.departmentRepository.Update(department);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -121,25 +132,33 @@ namespace Company.G02.PL.Controllers
         public IActionResult Delete(int? id)
         {
             if (id is null) return BadRequest("Invalid Id");//400
-            var department = _departmenRepository.Get(id.Value);
+            var department = _unitOfWork.departmentRepository.Get(id.Value);
             if (department == null) return NotFound(new { StatusCode = 404, message = $"Department With Id {id} is Not Found " });
-
-            return Details(id, "Delete");
+            var dto= _mapper.Map<Department>(department);
+            return View(dto);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Department department)
+        public IActionResult Delete([FromRoute] int id, CreateDepartmentDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != department.Id) BadRequest();//400
-                var count = _departmenRepository.Delete(department);
+                var department = new Department()
+                {
+                    Id = id,
+                    Code = model.Code,
+                    Name = model.Name,
+                    CreateAt = model.CreateAt
+                };
+               
+               
+                var count = _unitOfWork.departmentRepository.Delete(department);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(department);
+            return View(model);
         }
     }
 }

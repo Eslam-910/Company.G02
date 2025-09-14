@@ -9,14 +9,12 @@ namespace Company.G02.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _employee;
-        private readonly IDepartmentRepository _department;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeRepository employee,IDepartmentRepository department,IMapper mapper)
+        public EmployeeController(IUnitOfWork unitOfWork,IMapper mapper)
         {
-            _employee = employee;
-            _department = department;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         [HttpGet]
@@ -25,11 +23,11 @@ namespace Company.G02.PL.Controllers
             IEnumerable<Employee>employees;
             if (string.IsNullOrEmpty(SearchInput))
             {
-                 employees= _employee.GetAll();
+                 employees= _unitOfWork.employeeRepository.GetAll();
             }
             else
             {
-               employees= _employee.GetByName(SearchInput);
+               employees= _unitOfWork.employeeRepository.GetByName(SearchInput);
             }
             
             
@@ -38,7 +36,7 @@ namespace Company.G02.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var departments = _department.GetAll();
+            var departments = _unitOfWork.departmentRepository.GetAll();
             ViewData["departments"] = departments;
             return View();
         }
@@ -63,10 +61,10 @@ namespace Company.G02.PL.Controllers
                     //    Salary = model.Salary,
                     //    HirringDate = model.HirringDate,
                     //    CreateAt = model.CreateAt,
-                    //    DepartmentId=model.DepartmentId
+                    //    DepartmentId = model.DepartmentId
                     //};
                     var employee = _mapper.Map<Employee>(model);
-                    var count = _employee.Add(employee);
+                    var count = _unitOfWork.employeeRepository.Add(employee);
                     if (count > 0)
                     {
                         return RedirectToAction(nameof(Index));
@@ -85,22 +83,35 @@ namespace Company.G02.PL.Controllers
         public IActionResult Details(int?id,string viewname="Details")
         {
             if (id == null) return BadRequest("Invalid Id");
-            var employees= _employee.Get(id.Value);
+            var employees= _unitOfWork.employeeRepository.Get(id.Value);
             if (employees == null) return NotFound(new { StatusCode = 404, message = $"Employee With Id: {id} Is Not found" });
             return View(viewname,employees);
         }
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            var departments = _department.GetAll();
+            var departments = _unitOfWork.departmentRepository.GetAll();
             ViewData["departments"] = departments;
             if (id == null) return BadRequest("Invalid Id");
-            var employee = _employee.Get(id.Value);
+            var employee = _unitOfWork.employeeRepository.Get(id.Value);
             if (employee == null) return NotFound(new { StatusCode = 404, message = $"Employee With Id: {id} Is Not found" });
-            var dto=_mapper.Map<CreateEmployeeDto>(employee);
-            return View(dto);
+            //var dto=_mapper.Map<CreateEmployeeDto>(employee);
+            var employeeDto = new CreateEmployeeDto()
+            {
 
-           
+                Name = employee.Name,
+                Age = employee.Age,
+                Address = employee.Address,
+                IsActive = employee.IsActive,
+                IsDeleted = employee.IsDeleted,
+                Email = employee.Email,
+                Phone = employee.Phone,
+                Salary = employee.Salary,
+                HirringDate = employee.HirringDate,
+                CreateAt = employee.CreateAt,
+            };
+            return View(employeeDto);
+
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -109,9 +120,10 @@ namespace Company.G02.PL.Controllers
         {
             if(ModelState.IsValid)
             {
+              
                   if(id!=model.Id)return BadRequest();
                 
-                var count=_employee.Update(model);
+                var count= _unitOfWork.employeeRepository.Update(model);
                 if(count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -145,7 +157,7 @@ namespace Company.G02.PL.Controllers
                     Salary = model.Salary,
                 };
                 if (id != employee.Id) return BadRequest();
-                var count = _employee.Delete(employee);
+                var count = _unitOfWork.employeeRepository.Delete(employee);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
