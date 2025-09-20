@@ -23,5 +23,10 @@ namespace Company.G02.BLL
             employeeRepository=new EmpolyeeRepository(_context);
             departmentRepository=new DepartmenRepository(_context);
         }
+
+        //public int Compelete()
+        //{
+        //    return _context.SaveChanges();
+        //}
     }
 }

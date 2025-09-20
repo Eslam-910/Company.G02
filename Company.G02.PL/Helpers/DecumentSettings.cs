@@ -12,7 +12,7 @@
             
             //var folderPath= Directory.GetCurrentDirectory() + "\\wwwroot\\files\\" + FolderName;
 
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "@wwwroot\files", FolderName);
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/files", FolderName);
 
             //2.Get File Name And Make It Unique
 
@@ -23,13 +23,14 @@
             var filepath=Path.Combine(folderPath, filename);
 
             using var filestream = new FileStream(filepath, FileMode.Create);
+           
             file.CopyTo(filestream);
             return filename;
         }
         //2.Delete
         public static void FileDelete(string filename, string foldername)
         {
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "@wwwroot\files", foldername, filename);
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\files", foldername, filename);
             if (File.Exists(folderPath))
             {
                 File.Delete(folderPath);

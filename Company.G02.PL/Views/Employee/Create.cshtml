@@ -1,28 +1,17 @@
 ﻿@model CreateEmployeeDto
-@{
-    ViewData["Title"] = "Create";
-   
-}
-
-
 
 <h1>Create Employee</h1>
 
-
-
-
-<br />
-<br />
-<form asp-action="Create">
+<form asp-action="Create" asp-controller="Employee" method="post" enctype="multipart/form-data">
     <partial name="PartialViews/PartialEditAndCreate" />
+
     <div class="my-3">
-        <input type="submit" value="Create"class="btn btn-primary" />
+        <input type="submit" value="Create" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-light">Back To List</a>
     </div>
-
-
 </form>
-@section SectionValidation{
+
+@section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

@@ -10,5 +10,6 @@ namespace Company.G02.BLL.Interfaces
     {
         public IDepartmentRepository departmentRepository { get;}
         public IEmployeeRepository employeeRepository { get;}
+        //int Compelete();
     }
 }

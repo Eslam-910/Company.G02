@@ -2,6 +2,7 @@
 using Company.G02.BLL.Interfaces;
 using Company.G02.DAL.Models;
 using Company.G02.PL.Dtos;
+using Company.G02.PL.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
@@ -48,6 +49,7 @@ namespace Company.G02.PL.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    #region Manual Mapping
                     //Manual Mapping
                     //var employee = new Employee()
                     //{
@@ -63,10 +65,28 @@ namespace Company.G02.PL.Controllers
                     //    CreateAt = model.CreateAt,
                     //    DepartmentId = model.DepartmentId
                     //};
+                    //if (model is not null)
+                    //{
+                    //      model.ImageName= DecumentSettings.UploadFile(model.Image, "Images");
+                    //}
+
+                    #endregion
+
+                    if (model.Image != null)
+                    {
+                        model.ImageName = DecumentSettings.UploadFile(model.Image, "Images");
+                    }
+                    //if (model.Image != null)
+                    //{
+                    //    Console.WriteLine($"File: {model.Image.FileName}, Size: {model.Image.Length}");
+                    //}
                     var employee = _mapper.Map<Employee>(model);
                     var count = _unitOfWork.employeeRepository.Add(employee);
+
+                    
                     if (count > 0)
                     {
+                       
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -96,7 +116,7 @@ namespace Company.G02.PL.Controllers
             var employee = _unitOfWork.employeeRepository.Get(id.Value);
             if (employee == null) return NotFound(new { StatusCode = 404, message = $"Employee With Id: {id} Is Not found" });
             //var dto=_mapper.Map<CreateEmployeeDto>(employee);
-            var employeeDto = new CreateEmployeeDto()
+            var employeedto = new CreateEmployeeDto()
             {
 
                 Name = employee.Name,
@@ -110,7 +130,7 @@ namespace Company.G02.PL.Controllers
                 HirringDate = employee.HirringDate,
                 CreateAt = employee.CreateAt,
             };
-            return View(employeeDto);
+            return View(employeedto);
 
         }
         [HttpPost]
@@ -140,24 +160,24 @@ namespace Company.G02.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Delete([FromRoute] int id, CreateEmployeeDto model)
+        public IActionResult Delete([FromRoute] int id, Employee model)
         {
             if (ModelState.IsValid)
             {
-                var employee=new Employee()
-                {
-                    Id = id,
-                    Name = model.Name,
-                    Age = model.Age,
-                    Address = model.Address,
-                    IsActive = model.IsActive,
-                    IsDeleted=model.IsDeleted,
-                    Email = model.Email,
-                    Phone = model.Phone,
-                    Salary = model.Salary,
-                };
-                if (id != employee.Id) return BadRequest();
-                var count = _unitOfWork.employeeRepository.Delete(employee);
+                //var employee = new Employee()
+                //{
+                //    Id = id,
+                //    Name = model.Name,
+                //    Age = model.Age,
+                //    Address = model.Address,
+                //    IsActive = model.IsActive,
+                //    IsDeleted = model.IsDeleted,
+                //    Email = model.Email,
+                //    Phone = model.Phone,
+                //    Salary = model.Salary,
+                //};
+                if (id != model.Id) return BadRequest();
+                var count = _unitOfWork.employeeRepository.Delete(model);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
