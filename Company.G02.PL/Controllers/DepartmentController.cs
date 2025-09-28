@@ -23,9 +23,9 @@ namespace Company.G02.PL.Controllers
         }
         [HttpGet]
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var department= _unitOfWork.departmentRepository.GetAll();
+            var department= await _unitOfWork.departmentRepository.GetAllAsync();
             return View(department);
         }
         [HttpGet]
@@ -34,7 +34,7 @@ namespace Company.G02.PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(CreateDepartmentDto model)
+        public async Task<IActionResult> Create(CreateDepartmentDto model)
         {
             if (ModelState.IsValid)//Server Side Validation
             {
@@ -46,7 +46,7 @@ namespace Company.G02.PL.Controllers
 
                 };
                 //var department = _mapper.Map<Department>(model);
-               var count= _unitOfWork.departmentRepository.Add(department);
+               var count= await _unitOfWork.departmentRepository.AddAsync(department);
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -56,19 +56,19 @@ namespace Company.G02.PL.Controllers
             return View(model);
         }
         [HttpGet]
-        public IActionResult Details(int? id) 
+        public async Task<IActionResult> Details(int? id) 
         {
             if (id is null) return BadRequest("Invalid Id");//400
-            var department = _unitOfWork.departmentRepository.Get(id.Value);
+            var department = await _unitOfWork.departmentRepository.GetAsync(id.Value);
             if (department == null) return NotFound(new { StatusCode = 404, message = $"Department With Id {id} is Not Found " });
 
            return View(department);
         }
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null) return BadRequest("Invalid Id");//400
-            var department = _unitOfWork.departmentRepository.Get(id.Value);
+            var department = await _unitOfWork.departmentRepository.GetAsync(id.Value);
             if (department == null) return NotFound(new { StatusCode = 404, message = $"Department With Id {id} is Not Found " });
             var departmentdto = new CreateDepartmentDto()
             {
@@ -129,10 +129,10 @@ namespace Company.G02.PL.Controllers
         #endregion
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is null) return BadRequest("Invalid Id");//400
-            var department = _unitOfWork.departmentRepository.Get(id.Value);
+            var department = await _unitOfWork.departmentRepository.GetAsync(id.Value);
             if (department == null) return NotFound(new { StatusCode = 404, message = $"Department With Id {id} is Not Found " });
             var dto= _mapper.Map<Department>(department);
             return View(dto);

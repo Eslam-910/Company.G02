@@ -26,9 +26,9 @@ namespace Company.G02.PL
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
-            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
-            builder.Services.AddAutoMapper(typeof(DepartmentProfile));
-            
+            //builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+            //builder.Services.AddAutoMapper(typeof(DepartmentProfile));
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //life 
             //AddScoped(); Create Object Life Time Per Request-Unreachable Object
             //builder.Services.AddTransient();create life Time Per Operation
