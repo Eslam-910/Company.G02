@@ -3,8 +3,10 @@ using Company.G02.BLL;
 using Company.G02.BLL.Interfaces;
 using Company.G02.BLL.Repositories;
 using Company.G02.DAL.Data.Contexts;
+using Company.G02.DAL.Models;
 using Company.G02.PL.Mapping;
 using Company.G02.PL.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +39,12 @@ namespace Company.G02.PL
             builder.Services.AddScoped<IScopedService, ScopedService>();
             builder.Services.AddTransient<ITransientService, TransientService>();
             builder.Services.AddSingleton<ISiingletonService,SiingletonService>();
+
+            builder.Services.AddIdentity<AppUser,IdentityRole>()
+                             .AddEntityFrameworkStores<CompanyDbContext>();
+            builder.Services.ConfigureApplicationCookie(config =>
+                config.LoginPath = "/Account/SignIn"
+            );
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -52,7 +60,9 @@ namespace Company.G02.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.MapControllerRoute(
                 name: "default",
