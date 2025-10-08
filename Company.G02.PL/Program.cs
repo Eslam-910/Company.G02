@@ -41,7 +41,8 @@ namespace Company.G02.PL
             builder.Services.AddSingleton<ISiingletonService,SiingletonService>();
 
             builder.Services.AddIdentity<AppUser,IdentityRole>()
-                             .AddEntityFrameworkStores<CompanyDbContext>();
+                             .AddEntityFrameworkStores<CompanyDbContext>()
+                             .AddDefaultTokenProviders();
             builder.Services.ConfigureApplicationCookie(config =>
                 config.LoginPath = "/Account/SignIn"
             );
